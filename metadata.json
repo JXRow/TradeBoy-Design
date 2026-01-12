@@ -1,0 +1,5 @@
+{
+  "name": "TradeBoy",
+  "description": "A Matrix-themed cryptocurrency terminal optimized for 720x480 handheld devices with D-Pad navigation.",
+  "requestFramePermissions": []
+}
