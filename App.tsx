@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { MOCK_COINS } from './constants';
 import { Coin, ViewState, KeyAction, TransactionType } from './types';
 import { MarketView } from './components/MarketView';
 import { TransactionView } from './components/TransactionView';
+import { QuitDialog } from './components/QuitDialog';
 
 const App: React.FC = () => {
   const SCREEN_WIDTH = 720;
@@ -16,6 +18,7 @@ const App: React.FC = () => {
   
   const [footerActionIndex, setFooterActionIndex] = useState(0); 
   const [notification, setNotification] = useState<string | null>(null);
+  const [isQuitDialogOpen, setIsQuitDialogOpen] = useState(false);
 
   const showNotification = (msg: string) => {
     setNotification(msg);
@@ -23,6 +26,15 @@ const App: React.FC = () => {
   };
 
   const handleKey = useCallback((key: KeyAction) => {
+    // If quit dialog is open, handle keys separately inside that component
+    // but we can also handle the trigger here
+    if (key === 'MENU') {
+      setIsQuitDialogOpen(true);
+      return;
+    }
+
+    if (isQuitDialogOpen) return;
+
     if (key === 'BACK') {
       if (view === ViewState.TRANSACTION) {
         setView(ViewState.MARKET_LIST);
@@ -50,11 +62,14 @@ const App: React.FC = () => {
         setView(ViewState.TRANSACTION);
       }
     }
-  }, [view, coins, selectedIndex, footerActionIndex]);
+  }, [view, coins, selectedIndex, footerActionIndex, isQuitDialogOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key.startsWith('F')) return;
+      
+      // Don't prevent default for standard refresh or developer tools
+      if (e.key === 'r' && (e.ctrlKey || e.metaKey)) return;
       
       e.preventDefault();
       switch(e.key) {
@@ -67,6 +82,7 @@ const App: React.FC = () => {
         case 'Backspace': handleKey('BACK'); break;
         case 'q': case 'Q': handleKey('L1'); break;
         case 'w': case 'W': handleKey('R1'); break;
+        case 'm': case 'M': handleKey('MENU'); break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -119,6 +135,15 @@ const App: React.FC = () => {
                />
              )}
 
+             {isQuitDialogOpen && (
+               <QuitDialog 
+                 onConfirm={() => {
+                   window.location.reload(); // Simple simulation of jack-out
+                 }}
+                 onCancel={() => setIsQuitDialogOpen(false)}
+               />
+             )}
+
              {notification && (
                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-matrix-text text-black font-bold px-8 py-4 border-4 border-white z-[200] shadow-[0_0_40px_rgba(0,255,65,1)] text-2xl text-center">
                  <span className="animate-pulse block text-4xl mb-2">⚠</span>
@@ -148,6 +173,7 @@ const App: React.FC = () => {
       <div className="absolute bottom-4 text-zinc-600 font-mono text-xs uppercase flex gap-8">
         <span><span className="text-matrix-text">Hardware</span>: Handheld_v4</span>
         <span><span className="text-matrix-text">L1/R1</span>: Shortcuts (Q/W)</span>
+        <span><span className="text-matrix-text">M</span>: System Menu</span>
         <span><span className="text-matrix-text">A</span>: Enter | <span className="text-matrix-text">B</span>: Back</span>
       </div>
     </div>

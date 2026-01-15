@@ -1,3 +1,4 @@
+
 export interface Coin {
   id: string;
   symbol: string;
@@ -15,4 +16,4 @@ export enum ViewState {
 
 export type TransactionType = 'BUY' | 'SELL';
 
-export type KeyAction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'ENTER' | 'BACK' | 'L1' | 'R1';
+export type KeyAction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'ENTER' | 'BACK' | 'L1' | 'R1' | 'MENU';
