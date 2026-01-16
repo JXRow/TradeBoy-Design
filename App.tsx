@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MOCK_COINS } from './constants';
 import { Coin, ViewState, KeyAction, TransactionType } from './types';
 import { MarketView } from './components/MarketView';
+import { PerpView } from './components/PerpView';
+import { AccountView } from './components/AccountView';
 import { TransactionView } from './components/TransactionView';
 import { QuitDialog } from './components/QuitDialog';
 
@@ -19,15 +21,33 @@ const App: React.FC = () => {
   const [footerActionIndex, setFooterActionIndex] = useState(0); 
   const [notification, setNotification] = useState<string | null>(null);
   const [isQuitDialogOpen, setIsQuitDialogOpen] = useState(false);
+  const [lastKeyPressed, setLastKeyPressed] = useState<KeyAction | null>(null);
 
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 2500);
   };
 
+  const cycleView = (direction: 'LEFT' | 'RIGHT') => {
+    const views = [ViewState.MARKET_LIST, ViewState.PERP, ViewState.ACCOUNT];
+    const currentIndex = views.indexOf(view);
+    
+    if (currentIndex === -1) return;
+
+    let nextIndex;
+    if (direction === 'RIGHT') {
+      nextIndex = (currentIndex + 1) % views.length;
+    } else {
+      nextIndex = (currentIndex - 1 + views.length) % views.length;
+    }
+    setView(views[nextIndex]);
+  };
+
   const handleKey = useCallback((key: KeyAction) => {
-    // If quit dialog is open, handle keys separately inside that component
-    // but we can also handle the trigger here
+    setLastKeyPressed(key);
+    // Reset key press state shortly after to allow consecutive identical keys if needed
+    setTimeout(() => setLastKeyPressed(null), 100);
+
     if (key === 'MENU') {
       setIsQuitDialogOpen(true);
       return;
@@ -40,6 +60,16 @@ const App: React.FC = () => {
         setView(ViewState.MARKET_LIST);
         return;
       }
+    }
+
+    if (key === 'L1') {
+      cycleView('LEFT');
+      return;
+    }
+
+    if (key === 'R1') {
+      cycleView('RIGHT');
+      return;
     }
 
     if (view === ViewState.MARKET_LIST) {
@@ -67,22 +97,21 @@ const App: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key.startsWith('F')) return;
-      
-      // Don't prevent default for standard refresh or developer tools
       if (e.key === 'r' && (e.ctrlKey || e.metaKey)) return;
       
       e.preventDefault();
-      switch(e.key) {
-        case 'ArrowUp': handleKey('UP'); break;
-        case 'ArrowDown': handleKey('DOWN'); break;
-        case 'ArrowLeft': handleKey('LEFT'); break;
-        case 'ArrowRight': handleKey('RIGHT'); break;
-        case 'Enter': handleKey('ENTER'); break;
-        case 'Escape': 
-        case 'Backspace': handleKey('BACK'); break;
-        case 'q': case 'Q': handleKey('L1'); break;
-        case 'w': case 'W': handleKey('R1'); break;
-        case 'm': case 'M': handleKey('MENU'); break;
+      switch(e.key.toLowerCase()) {
+        case 'arrowup': handleKey('UP'); break;
+        case 'arrowdown': handleKey('DOWN'); break;
+        case 'arrowleft': handleKey('LEFT'); break;
+        case 'arrowright': handleKey('RIGHT'); break;
+        case 'enter': handleKey('ENTER'); break;
+        case 'escape': 
+        case 'backspace': handleKey('BACK'); break;
+        case 'q': handleKey('L1'); break;
+        case 'w': handleKey('R1'); break;
+        case 'x': handleKey('X'); break;
+        case 'm': handleKey('MENU'); break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -123,6 +152,14 @@ const App: React.FC = () => {
                />
              )}
 
+             {view === ViewState.PERP && (
+               <PerpView />
+             )}
+
+             {view === ViewState.ACCOUNT && (
+               <AccountView keyAction={lastKeyPressed} />
+             )}
+
              {view === ViewState.TRANSACTION && selectedCoin && (
                <TransactionView 
                   coin={selectedCoin} 
@@ -138,7 +175,7 @@ const App: React.FC = () => {
              {isQuitDialogOpen && (
                <QuitDialog 
                  onConfirm={() => {
-                   window.location.reload(); // Simple simulation of jack-out
+                   window.location.reload(); 
                  }}
                  onCancel={() => setIsQuitDialogOpen(false)}
                />
@@ -161,6 +198,10 @@ const App: React.FC = () => {
                  <div className="w-10 h-6 bg-zinc-700 rounded-sm border-t-2 border-zinc-500 text-[10px] flex items-center justify-center text-zinc-400">R1</div>
               </div>
               <div className="flex gap-4">
+                 <div className="w-14 h-14 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 font-bold active:border-zinc-500 active:text-white transition-all shadow-md">Y</div>
+                 <div className="w-14 h-14 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 font-bold active:border-zinc-500 active:text-white transition-all shadow-md">X</div>
+              </div>
+              <div className="flex gap-4">
                  <div className="w-14 h-14 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 font-bold active:border-zinc-500 active:text-white transition-all shadow-md">B</div>
                  <div className="w-14 h-14 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 font-bold active:border-zinc-500 active:text-white transition-all shadow-md">A</div>
               </div>
@@ -172,8 +213,7 @@ const App: React.FC = () => {
       
       <div className="absolute bottom-4 text-zinc-600 font-mono text-xs uppercase flex gap-8">
         <span><span className="text-matrix-text">Hardware</span>: Handheld_v4</span>
-        <span><span className="text-matrix-text">L1/R1</span>: Shortcuts (Q/W)</span>
-        <span><span className="text-matrix-text">M</span>: System Menu</span>
+        <span><span className="text-matrix-text">X</span>: Secondary (Keyboard: X)</span>
         <span><span className="text-matrix-text">A</span>: Enter | <span className="text-matrix-text">B</span>: Back</span>
       </div>
     </div>

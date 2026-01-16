@@ -44,7 +44,7 @@ export const MarketView: React.FC<MarketViewProps> = ({ coins, selectedIndex, fo
         <h2 className="text-4xl font-black text-matrix-text glow-text tracking-tighter leading-none pt-1">> SPOT_TRADE</h2>
         <div className="flex items-center gap-6">
           <div className="text-xl font-bold text-matrix-dim uppercase tracking-widest whitespace-nowrap pt-1">
-            PERP | ASSET | PROFILE
+            <span className="text-matrix-text">*</span> | PERP | ACCOUNT
           </div>
           <div className="flex gap-2">
             <span className="bg-matrix-dim text-black text-lg font-black w-8 h-8 rounded-sm shadow-sm flex items-center justify-center leading-none pt-1">L1</span>

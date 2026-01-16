@@ -9,11 +9,12 @@ export interface Coin {
 }
 
 export enum ViewState {
-  MARKET_LIST = 'MARKET_LIST',
-  COIN_DETAIL = 'COIN_DETAIL',
+  MARKET_LIST = 'MARKET_LIST', // This is SPOT
+  PERP = 'PERP',
+  ACCOUNT = 'ACCOUNT',
   TRANSACTION = 'TRANSACTION',
 }
 
 export type TransactionType = 'BUY' | 'SELL';
 
-export type KeyAction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'ENTER' | 'BACK' | 'L1' | 'R1' | 'MENU';
+export type KeyAction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'ENTER' | 'BACK' | 'L1' | 'R1' | 'X' | 'MENU';
