@@ -83,6 +83,49 @@
       .crt-bulge {
         transform: perspective(1000px) rotateX(1deg) scale(1.02);
       }
+
+      /* TV Power On Shutter Animations */
+      @keyframes shutter-top {
+        0% { transform: translateY(0); }
+        20% { transform: translateY(0); }
+        100% { transform: translateY(-100%); }
+      }
+
+      @keyframes shutter-bottom {
+        0% { transform: translateY(0); }
+        20% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
+      }
+
+      @keyframes content-fade {
+        0% { opacity: 0; }
+        20% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes initial-line {
+        0% { transform: scaleX(0); opacity: 0; }
+        10% { transform: scaleX(1); opacity: 1; }
+        20% { transform: scaleX(1); opacity: 1; }
+        21% { opacity: 0; }
+        100% { opacity: 0; }
+      }
+
+      .animate-shutter-top {
+        animation: shutter-top 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+      }
+
+      .animate-shutter-bottom {
+        animation: shutter-bottom 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+      }
+
+      .animate-content-fade {
+        animation: content-fade 1.2s ease-out forwards;
+      }
+
+      .animate-initial-line {
+        animation: initial-line 1.2s ease-out forwards;
+      }
     </style>
   <script type="importmap">
 {

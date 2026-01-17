@@ -144,49 +144,63 @@ const App: React.FC = () => {
            >
              <div className="crt-vignette"></div>
 
-             {view === ViewState.MARKET_LIST && (
-               <MarketView 
-                 coins={coins} 
-                 selectedIndex={selectedIndex} 
-                 footerActionIndex={footerActionIndex} 
-               />
-             )}
+             {/* Main Content Area with Fade In */}
+             <div className="absolute inset-0 z-10 animate-content-fade">
+               {view === ViewState.MARKET_LIST && (
+                 <MarketView 
+                   coins={coins} 
+                   selectedIndex={selectedIndex} 
+                   footerActionIndex={footerActionIndex} 
+                 />
+               )}
 
-             {view === ViewState.PERP && (
-               <PerpView />
-             )}
+               {view === ViewState.PERP && (
+                 <PerpView />
+               )}
 
-             {view === ViewState.ACCOUNT && (
-               <AccountView keyAction={lastKeyPressed} />
-             )}
+               {view === ViewState.ACCOUNT && (
+                 <AccountView keyAction={lastKeyPressed} />
+               )}
 
-             {view === ViewState.TRANSACTION && selectedCoin && (
-               <TransactionView 
-                  coin={selectedCoin} 
-                  type={txType}
-                  onClose={() => setView(ViewState.MARKET_LIST)}
-                  onConfirm={(amt) => {
-                    showNotification(`EXECUTED: ${txType} ${amt} ${selectedCoin.symbol}`);
-                    setView(ViewState.MARKET_LIST);
-                  }}
-               />
-             )}
+               {view === ViewState.TRANSACTION && selectedCoin && (
+                 <TransactionView 
+                    coin={selectedCoin} 
+                    type={txType}
+                    onClose={() => setView(ViewState.MARKET_LIST)}
+                    onConfirm={(amt) => {
+                      showNotification(`EXECUTED: ${txType} ${amt} ${selectedCoin.symbol}`);
+                      setView(ViewState.MARKET_LIST);
+                    }}
+                 />
+               )}
 
-             {isQuitDialogOpen && (
-               <QuitDialog 
-                 onConfirm={() => {
-                   window.location.reload(); 
-                 }}
-                 onCancel={() => setIsQuitDialogOpen(false)}
-               />
-             )}
+               {isQuitDialogOpen && (
+                 <QuitDialog 
+                   onConfirm={() => {
+                     window.location.reload(); 
+                   }}
+                   onCancel={() => setIsQuitDialogOpen(false)}
+                 />
+               )}
 
-             {notification && (
-               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-matrix-text text-black font-bold px-8 py-4 border-4 border-white z-[200] shadow-[0_0_40px_rgba(0,255,65,1)] text-2xl text-center">
-                 <span className="animate-pulse block text-4xl mb-2">⚠</span>
-                 {notification}
-               </div>
-             )}
+               {notification && (
+                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-matrix-text text-black font-bold px-8 py-4 border-4 border-white z-[200] shadow-[0_0_40px_rgba(0,255,65,1)] text-2xl text-center">
+                   <span className="animate-pulse block text-4xl mb-2">⚠</span>
+                   {notification}
+                 </div>
+               )}
+             </div>
+
+             {/* TV Power On Effect Overlay - Shutters and Initial Line */}
+             <div className="absolute inset-0 z-[999] pointer-events-none flex flex-col">
+                {/* Top Shutter */}
+                <div className="flex-1 bg-black animate-shutter-top origin-bottom"></div>
+                {/* Bottom Shutter */}
+                <div className="flex-1 bg-black animate-shutter-bottom origin-top"></div>
+                
+                {/* Initial Horizontal Line */}
+                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-matrix-text shadow-[0_0_10px_#00FF41] animate-initial-line -translate-y-1/2"></div>
+             </div>
            </div>
         </div>
 

@@ -38,7 +38,7 @@ export const AccountView: React.FC<AccountViewProps> = ({ keyAction }) => {
       {/* Header Area */}
       <div className="border-b-4 border-matrix-dim mb-4 pb-3 flex justify-between items-center relative z-10">
         <h2 className="text-4xl font-black text-matrix-text glow-text tracking-tighter leading-none pt-1">> SYS_ACCOUNT</h2>
-        <div className="flex items-center gap-6">
+        <div className="flex Forest-items-center gap-6">
           <div className="text-xl font-bold text-matrix-dim uppercase tracking-widest whitespace-nowrap pt-1">
              SPOT | PERP | <span className="text-matrix-text">*</span>
           </div>
@@ -71,7 +71,7 @@ export const AccountView: React.FC<AccountViewProps> = ({ keyAction }) => {
              </div>
 
              <div className="flex justify-between items-end border-b border-matrix-dark pb-2">
-               <span className="text-xl text-matrix-dim font-bold uppercase">USDC_Balance</span>
+               <span className="text-3xl text-matrix-dim font-black uppercase">USDC</span>
                <span className="text-3xl font-black text-matrix-text">3,124.20</span>
              </div>
            </div>
@@ -99,11 +99,11 @@ export const AccountView: React.FC<AccountViewProps> = ({ keyAction }) => {
 
              <div className="space-y-4">
                <div className="flex justify-between items-center">
-                 <span className="text-xl text-matrix-dim font-bold uppercase">ETH_Balance</span>
+                 <span className="text-3xl text-matrix-dim font-black uppercase">ETH</span>
                  <span className="text-3xl font-black text-matrix-text">1.4502</span>
                </div>
                <div className="flex justify-between items-center">
-                 <span className="text-xl text-matrix-dim font-bold uppercase">USDC_Balance</span>
+                 <span className="text-3xl text-matrix-dim font-black uppercase">USDC</span>
                  <span className="text-3xl font-black text-matrix-text">1,204.00</span>
                </div>
              </div>
